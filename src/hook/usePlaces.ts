@@ -1,67 +1,36 @@
-import { useState } from 'react';
-import socketIOClient from 'socket.io-client';
+import { useEffect, useState } from 'react';
 
 import { observerPositions, positions } from '../utilities/positions';
 import { getRandomInt } from '../utilities/randomInt';
 
 const initialPlaces = [
-  { place: 'N', takenPlace: false, user: undefined, cards: [], position: undefined },
-  { place: 'S', takenPlace: false, user: undefined, cards: [], position: undefined },
-  { place: 'E', takenPlace: false, user: undefined, cards: [], position: undefined },
-  { place: 'W', takenPlace: false, user: undefined, cards: [], position: undefined }
+  { place: 'N', takenPlace: false, user: undefined, cards: [], position: undefined, isReady: false },
+  { place: 'S', takenPlace: false, user: undefined, cards: [], position: undefined, isReady: false },
+  { place: 'E', takenPlace: false, user: undefined, cards: [], position: undefined, isReady: false },
+  { place: 'W', takenPlace: false, user: undefined, cards: [], position: undefined, isReady: false }
 ];
 
-const initialUser = { place: undefined, takenPlace: false, user: undefined };
-
-const ENDPOINT = "http://127.0.0.1:5000";
-
-const connectionOptions =  {
-  forceNew: true,
-  reconnection: true,
-  reconnectionDelay: 2000,                  //starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
-  reconnectionDelayMax : 60000,             //1 minute maximum delay between connections
-  reconnectionAttempts: Infinity,           //to prevent dead clients, having the user to having to manually reconnect after a server restart.
-  timeout : 10000,                          //before connect_error and connect_timeout are emitted.
-  transports : ['websocket']                //forces the transport to be only websocket. Server needs to be setup as well/
-}
+const initialUser = { place: undefined, takenPlace: false, name: undefined };
 
 export const usePlaces = () => {
+  const [gameStarted, setGameStarted] = useState(false);
   const [player, setPlayer] = useState<any>(initialUser);
   const [userName, setUserName] = useState<string | undefined>(undefined);
   const [places, setPlaces] = useState<any>(initialPlaces);
-  const socket = socketIOClient(ENDPOINT, connectionOptions);
-
-  // @ts-ignore
-  useEffect(() => {
-    socket.emit("places", player);
-    socket.on("places", function (data: any) {
-      setPlaces(data);
-    });
-    return () => socket.disconnect();
-  }, [player]); // eslint-disable-line
-
-  const setPlace = (place: string) => {
-    const userPlace = { place, user: player.user };
-    socket.emit("set place", userPlace);
-    setPlayer(userPlace);
-  }
-
-  const cleanPlace = (userName: string) => {
-    setPlayer({ ...initialUser, user: player.user });
-    socket.emit("clean place", userName);
-  }
+  const [showCountDown, setShowCountDown] = useState(false);
+  const [showReadyModal, setShowReadyModal] = useState(false);
 
   const handleSubmit = () => {
     if (userName) {
-      setPlayer({ ...player, user: userName });
+      setPlayer({ ...player, name: userName });
     } else {
       const randomUserName = getRandomInt(0, 100000);
-      setPlayer({ ...player, user: `Guest${randomUserName}` });
+      setPlayer({ ...player, name: `Guest${randomUserName}` });
     }
   }
 
   const setPosition = (place: any) => {
-    if (place?.user === player?.user) {
+    if (place?.name === player?.name) {
       return 'BOTTOM';
     } else if (player.place) {
       return positions[player?.place][place.place];
@@ -70,13 +39,40 @@ export const usePlaces = () => {
     }
   }
 
+  useEffect(() => {
+    const allPlacesTaken = places.every((user) => user.name);
+    setShowReadyModal(allPlacesTaken);
+
+    const allPlayersReady = places.every((user) => user.isReady);
+    setShowCountDown(allPlayersReady);
+  }, [places]);
+
+  // const setIsReady = (place: any) => {
+  //   if (place.user === player.user) {
+  //     socket.emit("readyStatus", { user: place.user, status: !place.isReady });
+  //   }
+  // };
+
+  const handleStartGame = () => {
+    setShowCountDown(false);
+    setGameStarted(true);
+  }
+
   return {
     player,
     places,
-    setPlace,
-    cleanPlace,
+    userName,
+    setPlaces,
+    setPlayer,
+    showReadyModal,
+    gameStarted,
+    showCountDown,
+  //   setPlace,
+    // setIsReady,
+  //   cleanPlace,
     setUserName,
     setPosition,
     handleSubmit,
+    handleStartGame,
   }
 }

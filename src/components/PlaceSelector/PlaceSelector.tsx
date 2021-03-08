@@ -8,7 +8,7 @@ export const PlaceSelector = ({ places, setPlace, user, closeUser }: any) => {
   const checkIfDisabled = (pos: string): boolean => {
     let isPlaceTaken = false;
 
-    for (let place of places) {
+    for (const place of places) {
       if (((place.place === pos) && place.takenPlace) || user.place) {
         isPlaceTaken = true;
       }
@@ -28,9 +28,9 @@ export const PlaceSelector = ({ places, setPlace, user, closeUser }: any) => {
             onClick={() => setPlace(place.place)}
             disabled={checkIfDisabled(place.place)}
           >
-            {place.user ? place.user : place.place}
-            {place.user === user.user && place.place === user.place && (
-              <CloseIcon onClick={() => closeUser(place.user)}>&#10006;</CloseIcon>
+            {place.name ? place.name : place.place}
+            {place.name === user.name && place.place === user.place && (
+              <CloseIcon onClick={() => closeUser(place.name)}>&#10006;</CloseIcon>
             )}
           </Btn>
         ))}
