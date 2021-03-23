@@ -16,6 +16,7 @@ export const PlayerNameModal = ({ player, setUserName, handleSubmit }: Props) =>
           <Input
             type="text"
             id="player-name"
+            autoComplete="off"
             placeholder="wpisz imię"
             onChange={(e: any) => setUserName(e.target.value)}
           />

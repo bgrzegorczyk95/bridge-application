@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 export const ReadyStatusWrapperStyles = styled.div`
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   margin: 10px;
 `;
@@ -27,4 +28,10 @@ export const NotReadyStyles = styled.div`
   border-radius: 5px;
   padding: 5px;
   cursor: pointer;
+`;
+
+export const SectionStyles = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 `;

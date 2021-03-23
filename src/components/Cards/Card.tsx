@@ -7,20 +7,26 @@ interface Props {
   isVisible: boolean;
   position?: string;
   user?: string;
-  cards: string[];
+  cards: Card[];
   place: string;
   cardsAmount: number;
+  handleClickCard: (card: Card) => void;
 }
 
-export const Card = ({ isVisible, position, user, cards, place, cardsAmount }: Props) => {
+interface Card {
+  color: string;
+  value: string;
+}
+
+export const Card = ({ isVisible, position, user, cards, place, cardsAmount, handleClickCard }: Props) => {
   const cardsList: any = cardsAmount && !cards.length ? Array(cardsAmount).fill('') : cards;
-  console.log('ESA', cardsList);
+
   return (
     position ? (
       <CardsWrapper margin={`-${(((cards?.length || cardsAmount) / 2) * 40) - 20}px`} position={position}>
         {cardsList?.length ? <PlayerName position={position}>{user || ''}</PlayerName> : null}
         {cardsList?.length ? (
-          cardsList?.map((card: string, index: number) => (
+          cardsList?.map((card: Card, index: number) => (
             <CardWrapper
               key={`${index}`}
               position={position}
@@ -31,7 +37,8 @@ export const Card = ({ isVisible, position, user, cards, place, cardsAmount }: P
                 alt="card"
                 isVisible={isVisible}
                 position={position}
-                src={isVisible ? playerCards.default[card] : CardBack}
+                src={isVisible ? playerCards.default[`${card.value}${card.color}`] : CardBack}
+                onClick={() => handleClickCard(card)}
               />
             </CardWrapper>
           ))

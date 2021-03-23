@@ -22,9 +22,9 @@ export const PlaceSelector = ({ places, setPlace, user, closeUser }: any) => {
       <PlaceIcon src={Place} alt="place icon" onClick={() => setShowPlaces(!showPlaces)} />
       <Title visible={showPlaces}>Wybierz miejsce</Title>
       <Row visible={showPlaces}>
-        {places.map((place: any) => (
+        {places.map((place: any, i: number) => (
           <Btn
-            key={place.place}
+            key={i}
             onClick={() => setPlace(place.place)}
             disabled={checkIfDisabled(place.place)}
           >

@@ -17,7 +17,7 @@ export const ModalContentStyles = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 400px;
+  min-width: 300px;
   min-height: 80px;
   border-radius: 5px;
   background-color: #ffffff;

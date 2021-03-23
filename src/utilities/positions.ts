@@ -1,4 +1,4 @@
-export const positions: { [key: string]: { [key: string]: string } } = {
+const positions: { [key: string]: { [key: string]: string } } = {
   S: {
     N: 'TOP',
     E: 'RIGHT',
@@ -21,9 +21,19 @@ export const positions: { [key: string]: { [key: string]: string } } = {
   },
 };
 
-export const observerPositions: { [key: string]: string } = {
+const observerPositions: { [key: string]: string } = {
   N: 'TOP',
   S: 'BOTTOM',
   E: 'LEFT',
   W: 'RIGHT',
-}
+};
+
+export const setPosition = (place: any, player: any) => {
+  if (place?.name === player?.name) {
+    return 'BOTTOM';
+  } else if (player.place) {
+    return positions[player?.place][place.place];
+  } else {
+    return observerPositions[place.place];
+  }
+};

@@ -11,7 +11,6 @@ export const CountDown = ({ seconds, startGame }: Props) => {
   useEffect(() => {
     const countDown = setInterval(() => {
       setTime(time - 1);
-      console.log('aha');
     }, 1000);
 
     if (time <= 0) {
