@@ -6,18 +6,18 @@ import { WrapperStyles, BorderStyles, CardWrapperStyles, CardStyles } from './Th
 interface Props {
   cards: any;
   player: any;
+  clientId: string;
 }
 
-export const ThrownCards = ({ cards, player }: Props) => {
+export const ThrownCards = ({ cards, player, clientId }: Props) => {
   return (
     <WrapperStyles>
-      <BorderStyles>
-        {cards.map((card: any, index: number) => (
-          <CardWrapperStyles position={setPosition(card, player)} key={index}>
-            <CardStyles src={playerCards.default[`${card.value}${card.color}`]} />
-          </CardWrapperStyles>
-        ))}
-      </BorderStyles>
+      {cards.map((card: any, index: number) => (
+        <CardWrapperStyles position={setPosition(card, clientId, player)} key={index}>
+          {console.log(setPosition(card, clientId, player))}
+          <CardStyles src={playerCards.default[`${card.value}${card.color}`]} />
+        </CardWrapperStyles>
+      ))}
     </WrapperStyles>
   )
 }

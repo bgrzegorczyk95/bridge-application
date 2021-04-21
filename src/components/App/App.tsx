@@ -1,82 +1,61 @@
-/* eslint-disable */
+import React, { useState } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
-import React from 'react';
-import { usePlaces } from '../../hook/usePlaces';
-import { Card } from '../Cards/Card';
-import { Modal } from '../Modal/Modal';
-import { PlaceSelector } from '../PlaceSelector/PlaceSelector';
-import { PlayerNameModal } from '../PlayerNameModal/PlayerNameModal';
-import { Wrapper } from './AppStyles';
-import { ReadyStatus } from '../Modal/components/ReadyStatus';
-import { Auction } from '../Modal/Auction/Auction';
-import { ThrownCards } from '../ThrownCards/ThrownCards';
-import { setPosition } from '../../utilities/positions';
-import { TurnArrow } from '../TurnArrow/TurnArrow';
+import { useSocketMessage } from '../../hook/useSocketMessage';
+import { Board } from '../Board/Board';
+import { Lobby } from '../Lobby/Lobby';
+import { Main } from '../Main/Main';
+import { Navbar } from '../Navbar/Navbar';
+import { Tables } from '../Tables/Tables';
 
 const socket = new WebSocket('ws://localhost:5000');
+export const SocketContext = React.createContext(null);
 
 export const App = () => {
-  const {
-    turn,
-    trump,
-    player,
-    places,
-    auction,
-    clientId,
-    showReadyModal,
-    auctionStarted,
-    gameStarted,
-    thrownCards,
-    showCountDown,
-    auctionHistory,
-    setPlace,
-    cleanPlace,
-    setIsReady,
-    setUserName,
-    handleSubmit,
-    handleStartGame,
-    handleClickCard,
-} = usePlaces(socket);
+  const history = useHistory();
+  const [gameId, setGameId] = useState<number | undefined>();
+  const socketMessage = useSocketMessage(socket, gameId);
+
+  socket.onopen = (() => {
+    const clientId = localStorage.getItem('clientId');
+
+    const payload = {
+      method: 'connect',
+      clientId,
+    };
+
+    socket.send(JSON.stringify(payload));
+  });
+
+  const handleSelect = (id: number) => {
+    setGameId(id);
+    history.push(`/lobby/${id}`);
+  };
 
   return (
-    <Wrapper>
-      <Modal isOpen={(showReadyModal || (auctionStarted && turn?.place === player?.place)) && !gameStarted}>
-        <>
-          {showReadyModal && (
-            <ReadyStatus
-              places={places}
-              setIsReady={setIsReady}
-              showCountDown={showCountDown}
-              handleStartGame={handleStartGame}
-            />
-          )}
-          {(auctionStarted && turn?.place === player?.place) && (
-            <Auction
-              turn={turn}
-              auction={auction}
-              socket={socket}
-              player={player}
-              clientId={clientId}
-            />
-          )}
-        </>
-      </Modal>
-      <PlaceSelector setPlace={setPlace} places={places} user={player} closeUser={cleanPlace} />
-      {places?.map((place: any, index: number) => (
-        <Card
-          key={index}
-          place={place.place}
-          cards={place.cards}
-          user={place?.name}
-          cardsAmount={place.cardsAmount}
-          position={setPosition(place, player)}
-          isVisible={place.cards.length}
-          handleClickCard={(card: any) => handleClickCard(card, place)}
-        />
-      ))}
-      <PlayerNameModal player={player} setUserName={setUserName} handleSubmit={handleSubmit} />
-      {(auctionStarted || gameStarted) && <TurnArrow position={setPosition(turn, player)} />}
-      <ThrownCards player={player} cards={thrownCards} />
-    </Wrapper>
+    <>
+      <Navbar />
+      <SocketContext.Provider value={socketMessage}>
+        <Switch>
+          <Route exact path="/tables">
+            <Tables handleSelect={handleSelect} tabs={socketMessage.games} />
+          </Route>
+          <Route exact path="/lobby/:id">
+            {gameId &&
+              <Lobby
+                socket={socket}
+                gameId={gameId}
+              />
+            }  
+          </Route>
+          <Route exact path="/board/:id">
+            <Board gameId={gameId} socket={socket} />
+          </Route>
+          <Route exact path="/">
+            <p>Es</p>
+          </Route>
+        </Switch>
+      </SocketContext.Provider>
+    </>
   );
 }

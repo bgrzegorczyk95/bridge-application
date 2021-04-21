@@ -1,29 +1,22 @@
 import React from 'react';
 import { useAuction } from '../../../hook/useAuction';
 import { auctionOptions } from '../../../utilities/auctionOptions';
+import { checkIfDoubledAndRedoubled } from '../../../utilities/checkIfDoubledAndRedoubled';
 import { AuctionRowStyles, ColorStyles, AuctionColStyles, PassStyles, XStyles, AuctionValue } from './AuctionStyles';
 
 interface Props {
-  auction: {
-    row: number;
-    col: number;
-    pass?: boolean;
-    doubles?: boolean;
-    redoubled?: boolean;
-  };
-  player: any;
-  clientId: string;
   socket: any;
-  turn: any;
+  gameId: number;
+  game: any;
+  player: any;
 }
 
-export const Auction = ({ auction, socket, player, clientId, turn }: Props) => {
-  const {
-    setBid, setPass, setDoubled, setRedoubled, isDoubledEnabled, isEnabledRedoubled,
-  } = useAuction(auction, socket, player, clientId, turn);
+export const Auction = ({ game, player, socket, gameId }: Props) => {
+  const { setBid, setPass, setDoubled, setRedoubled } = useAuction(game.bestBid, socket, player, gameId, game.turn);
+  const { isDoubled, isRedoubled } = checkIfDoubledAndRedoubled(game.bestBid, player);
 
   const renderCol = (row: number, col: number, value: string, color: { name: string, image: string }) => {
-    const disabled = row < auction?.row || (row === auction?.row && col <= auction?.col);
+    const disabled = row < game.bestBid?.row || (row === game.bestBid?.row && col <= game.bestBid?.col);
 
     return (
       <AuctionColStyles
@@ -50,8 +43,8 @@ export const Auction = ({ auction, socket, player, clientId, turn }: Props) => {
       ))}
       <AuctionRowStyles>
         <PassStyles onClick={setPass}>PASS</PassStyles>
-        <XStyles onClick={() => isDoubledEnabled && setDoubled()} disabled={!isDoubledEnabled}>X</XStyles> 
-        <XStyles onClick={() => isEnabledRedoubled && setRedoubled()} disabled={!isEnabledRedoubled}>XX</XStyles> 
+        <XStyles onClick={() => isDoubled && setDoubled()} disabled={!isDoubled}>X</XStyles> 
+        <XStyles onClick={() => isRedoubled && setRedoubled()} disabled={!isRedoubled}>XX</XStyles> 
       </AuctionRowStyles>
     </>
   )

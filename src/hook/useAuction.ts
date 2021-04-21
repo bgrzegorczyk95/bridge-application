@@ -1,18 +1,9 @@
-const placeTypes = {
-  N: 'S',
-  S: 'N',
-  E: 'W',
-  W: 'E',
-};
-
-export const useAuction = (auction: any, socket: any, player: any, clientId: string, turn: string) => {
-  const isDoubledEnabled = auction?.col >= 0 && !auction?.doubled && auction?.place !==  placeTypes[player.place];
-  const isEnabledRedoubled = auction?.doubled && !auction?.redoubled && auction?.place !==  placeTypes[player.place];
-
+export const useAuction = (bidding: any, socket: any, player: any, gameId: number, turn: string) => {
   const setBid = (row: number, col: number, colorName: string, value: string) => {
     const payLoad = {
       method: "bid",
       turn,
+      gameId,
       bid: { place: player.place, row, col, colorName, value }
     }
 
@@ -22,7 +13,8 @@ export const useAuction = (auction: any, socket: any, player: any, clientId: str
   const setPass = () => {
     const payLoad = {
       method: "bid",
-      bid: { ...auction, pass: true },
+      gameId,
+      bid: { place: player.place, pass: true },
       turn,
     }
 
@@ -32,7 +24,8 @@ export const useAuction = (auction: any, socket: any, player: any, clientId: str
   const setDoubled = () => {
     const payLoad = {
       method: "bid",
-      bid: { ...auction, place: player.place, doubled: true },
+      gameId,
+      bid: { place: player.place, doubled: true },
       turn,
     }
 
@@ -42,7 +35,8 @@ export const useAuction = (auction: any, socket: any, player: any, clientId: str
   const setRedoubled = () => {
     const payLoad = {
       method: "bid",
-      bid: { ...auction, place: player.place, redoubled: true },
+      gameId,
+      bid: { place: player.place, doubled: false, redoubled: true },
       turn,
     }
 
@@ -54,7 +48,5 @@ export const useAuction = (auction: any, socket: any, player: any, clientId: str
     setPass,
     setDoubled,
     setRedoubled,
-    isDoubledEnabled,
-    isEnabledRedoubled,
   }
 };

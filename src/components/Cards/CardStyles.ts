@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const CardWrapper = styled.div<any>`
-  width: 100px;
-  height: 150px;
+  width: 80px;
+  height: 110px;
   border-radius: 5px;
   position: absolute;
   overflow: hidden;
@@ -82,11 +82,11 @@ export const SignBottomRight = styled.span`
 
 export const PlayerName = styled.div<any>`
   position: ${({ position }) => position ? 'absolute' : 'relative'};
-  color: #595959;
+  color: #ffffff;
   font-weight: bold;
   white-space: nowrap;
-  bottom: ${({ position }) => (position === 'TOP' ||  position === 'RIGHT') && '-190px'};
-  top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '-190px'};
+  bottom: ${({ position }) => (position === 'TOP' ||  position === 'RIGHT') && '-145px'};
+  top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '-145px'};
   left: 0;
   transform: ${({ position }) => position === 'RIGHT' && 'rotate(180deg)'};
 

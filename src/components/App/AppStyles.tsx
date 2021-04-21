@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-  margin: 0;
+  position: relative;
+  margin: 50px;
   padding: 0;
-  width: 100%;
-  height: 100vh;
+  width: 60%;
+  height: 70vh;
   display: flex;
   justify-content: center;
-  background-color: rgb(40, 120, 64);
-  align-items: center;
+  background: radial-gradient(green, rgb(40,72,79));  align-items: center;
   overflow: hidden;
 `;

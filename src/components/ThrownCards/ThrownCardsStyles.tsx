@@ -9,54 +9,11 @@ export const WrapperStyles = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
-
-  ::before, ::after {
-    display: block;
-    content: "";
-    width: 30%;
-    height: 30%;
-    position: absolute;
-  }
-
-  ::before {
-    top: -2px;
-    left: -2px;
-    border-top: 2px solid #525252;
-    border-left: 2px solid #525252;
-  }
-
-  ::after {
-    top: -2px;
-    right: -2px;
-    border-top: 2px solid #525252;
-    border-right: 2px solid #525252;
-  }
+  width: 330px;
+  height: 330px;
 `;
 
 export const BorderStyles = styled.div`
-  ::before, ::after {
-    display: block;
-    content: "";
-    width: 30%;
-    height: 30%;
-    position: absolute;
-  }
-
-  ::before {
-    bottom: -2px;
-    left: -2px;
-    border-bottom: 2px solid #525252;
-    border-left: 2px solid #525252;
-  }
-
-  ::after {
-    bottom: -2px;
-    right: -2px;
-    border-bottom: 2px solid #525252;
-    border-right: 2px solid #525252;
-  }
 `;
 
 const positionsStyles = {
@@ -84,8 +41,8 @@ const positionsStyles = {
 
 export const CardWrapperStyles = styled.div<Props>`
   position: absolute;
-  width: 100px;
-  height: 150px;
+  width: 80px;
+  height: 110px;
   border-radius: 5px;
 
   ${({ position }) => positionsStyles[position]};

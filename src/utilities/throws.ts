@@ -1,15 +1,11 @@
-export const checkIfThrowAllowed = (trump, thrownCards, playerCards, card) => {
-  const trumpColor = trump?.colorName;
+export const checkIfThrowAllowed = (thrownCards, playerCards, card) => {
   const firstCardColor = thrownCards[0]?.color;
   const playerCardColors = playerCards.map((card: any) => card.color);
   const areAllCardThrows = thrownCards.length === 4;
   const hasFirstCardColor = playerCardColors.includes(firstCardColor);
-  const hasTrumpColor = playerCardColors.includes(trumpColor);
   const isFirstColor = card.color === firstCardColor;
-  const isTrumpColor = card.color === trumpColor;
-  console.log(thrownCards);
-  return !thrownCards.length || (!areAllCardThrows && ((hasFirstCardColor && isFirstColor)
-  || (!hasFirstCardColor && hasTrumpColor && isTrumpColor) || (!hasFirstCardColor && !hasTrumpColor)));
+
+  return !thrownCards.length || (!areAllCardThrows && ((hasFirstCardColor && isFirstColor) || !hasFirstCardColor));
 };
 
 export const checkIfPlayerTurn = (turn, player, dummy, place) => {

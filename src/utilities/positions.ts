@@ -28,8 +28,8 @@ const observerPositions: { [key: string]: string } = {
   W: 'RIGHT',
 };
 
-export const setPosition = (place: any, player: any) => {
-  if (place?.name === player?.name) {
+export const setPosition = (place: any, clientId: any, player: any) => {
+  if (place?.place === player.place) {
     return 'BOTTOM';
   } else if (player.place) {
     return positions[player?.place][place.place];
