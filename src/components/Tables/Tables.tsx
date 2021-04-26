@@ -9,7 +9,6 @@ interface Props {
 const countPlayers = (players: any) => players.filter((player: any) => player.takenPlace).length;
 
 export const Tables = ({ tabs, handleSelect }: Props) => {
-  console.log(tabs);
   return (
     <TablesWrapper>
       <TableStyles>

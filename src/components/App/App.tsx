@@ -29,7 +29,7 @@ export const App = () => {
 
   const handleSelect = (id: number) => {
     setGameId(id);
-    history.push(`/lobby/${id}`);
+    history.push(`/board/${id}`);
   };
 
   return (
@@ -39,14 +39,6 @@ export const App = () => {
         <Switch>
           <Route exact path="/tables">
             <Tables handleSelect={handleSelect} tabs={socketMessage.games} />
-          </Route>
-          <Route exact path="/lobby/:id">
-            {gameId &&
-              <Lobby
-                socket={socket}
-                gameId={gameId}
-              />
-            }  
           </Route>
           <Route exact path="/board/:id">
             <Board gameId={gameId} socket={socket} />

@@ -7,13 +7,21 @@ export const NarbarWrapper = styled.div`
   width: 100%;
   height: 50px;
   border-bottom: 2px solid gray;
-  background-color: #1976d2;
+  background-color: rgb(60, 59, 103);
+  
+  @media (max-width: 400px) {
+    justify-content: flex-start;
+  }
 `;
 
 export const ListStyles = styled.ul`
   display: flex;
-  margin: 0;
   list-style: none;
+  margin: 0;
+
+  @media (max-width: 400px) {
+    padding-left: 0;
+  }
 
   li > a {
     text-decoration: none;

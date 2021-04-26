@@ -4,16 +4,38 @@ interface Props {
   position: string;
 }
 
-export const WrapperStyles = styled.div`
+const positions = {
+  N: {
+    E: '38%',
+    W: '61%',
+  },
+  S: {
+    E: '61%',
+    W: '38%',
+  },
+  E: {
+    N: '61%',
+    S: '38%',
+  },
+  W: {
+    N: '38%',
+    S: '61%',
+  },
+};
+
+export const WrapperStyles = styled.div<{ bestBidPlace: string; playerPlace: string; }>`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   width: 330px;
   height: 330px;
-`;
+  transform: translate(-50%, -50%);
 
-export const BorderStyles = styled.div`
+  @media (max-width: 600px) {
+    width: 200px;
+    height: 210px;
+    left: ${({ bestBidPlace, playerPlace }) => positions[playerPlace][bestBidPlace]};
+  }
 `;
 
 const positionsStyles = {
@@ -44,6 +66,11 @@ export const CardWrapperStyles = styled.div<Props>`
   width: 80px;
   height: 110px;
   border-radius: 5px;
+
+  @media (max-width: 500px) {
+    width: 60px;
+    height: 90px;
+  }
 
   ${({ position }) => positionsStyles[position]};
 `;

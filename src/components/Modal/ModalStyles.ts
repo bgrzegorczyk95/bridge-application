@@ -9,7 +9,8 @@ export const ModalStyles = styled.div`
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.8);
 `;
 
 export const ModalContentStyles = styled.div`

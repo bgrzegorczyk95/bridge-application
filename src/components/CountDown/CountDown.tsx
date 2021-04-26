@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+const colorTypes = {
+  white: '#ffffff',
+  black: '#000000',
+};
+
+const TextStyles = styled.p<{ color: string }>`
+  color: ${({ color }) => colorTypes[color]};
+  font-weight: bold;
+`;
 
 interface Props {
   seconds: number;
-  startGame: () => void;
+  text: string;
+  color: string;
+  handleEndTime: () => void;
 }
 
-export const CountDown = ({ seconds, startGame }: Props) => {
+export const CountDown = ({ text, seconds, handleEndTime, color }: Props) => {
   const [time, setTime] = useState(seconds);
 
   useEffect(() => {
@@ -14,13 +27,13 @@ export const CountDown = ({ seconds, startGame }: Props) => {
     }, 1000);
 
     if (time <= 0) {
-      startGame();
+      handleEndTime();
     }
 
     return () => clearInterval(countDown);
   }, [time]);
 
   return (
-      <p>Gra rozpocznie się za: {time}</p>
+      <TextStyles color={color}>{text}: {time}</TextStyles>
   )
 }

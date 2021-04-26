@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { LobbyWrapper, PlayerCard, Button, CloseIcon, ReadyStyles, NotReadyStyles } from './LobbyStyles';
+import { LobbyWrapper, PlayerCard, Button, CloseIcon, ReadyStyles, NotReadyStyles, LobbyContent, LobbyHeader, PlayerName } from './LobbyStyles';
 import { SocketContext } from '../App/App';
 import { CountDown } from '../CountDown/CountDown';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 
 interface Props {
   gameId: number;
@@ -15,7 +15,6 @@ export const Lobby = ({ gameId, socket }: Props) => {
   const game = games[gameId];
   const allPlacesTaken = game.players.every((user) => user.name);
   const allPlayersReady = game.players.every((user) => user.isReady);
-
   const [isStarted, setIsStarted] = useState(game.statuses.auctionStarted || game.statuses.gameStarted);
 
   const handleSelectPosition = (place: any) => {
@@ -46,7 +45,7 @@ export const Lobby = ({ gameId, socket }: Props) => {
   const handleStartGame = () => {
     if (!isStarted) {
       setIsStarted(true);
-      history.push(`/board/${gameId}`);
+      socket.send(JSON.stringify({ method: 'startBidding', gameId }));
     }
   }
 
@@ -56,30 +55,35 @@ export const Lobby = ({ gameId, socket }: Props) => {
     }
   };
 
+  const handleClose = () => {
+    socket.send(JSON.stringify({ method: "clean", clientId, gameId }));
+  }
+
   return (
     <LobbyWrapper>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {game.players.map((item: any) => (
+      <LobbyHeader>Miejsca</LobbyHeader>
+      <LobbyContent>
+        {game?.players.map((item: any) => (
           <PlayerCard key={item.place} isReady={item.isReady}>
-            <p>{item.name ? item.name : item.place}</p>
+            <PlayerName>{item.name ? item.name : item.place}</PlayerName>
             {!item.name && (
               <Button disabled={checkIfDisabled(item.place)} onClick={() => handleSelectPosition(item)}>
                 Wybierz
               </Button>
             )}
             {(item.name === player.name && item.place === player.place && !isStarted) && (
-              <CloseIcon onClick={() => console.log('es')}>&#10006;</CloseIcon>
+              <CloseIcon onClick={handleClose}>&#10006;</CloseIcon>
             )}
-            {allPlacesTaken && (
+            {(!game.statuses.auctionStarted && !game.statuses.gameStarted && allPlacesTaken) && (
               item.isReady ? (
                 <ReadyStyles onClick={() => setIsReady(item)}>Gotowy</ReadyStyles>
               ) : <NotReadyStyles onClick={() => setIsReady(item)}>Niegotowy</NotReadyStyles>
             )}
           </PlayerCard>
         ))}
-      </div>
+      </LobbyContent>
       {(allPlayersReady && !isStarted) && (
-        <CountDown seconds={5} startGame={handleStartGame} />
+        <CountDown color="white" text="Gra rozpocznie się za" seconds={5} handleEndTime={handleStartGame} />
       )}
     </LobbyWrapper>
   );

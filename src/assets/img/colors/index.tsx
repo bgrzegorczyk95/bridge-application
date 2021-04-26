@@ -17,3 +17,10 @@ export const colors = {
   diamondsDisabled,
   clubsDisabled,
 };
+
+export const colorTypes = {
+  S: spades,
+  H: hearts,
+  D: diamonds,
+  C: clubs,
+};

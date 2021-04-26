@@ -1,8 +1,16 @@
 import styled from "styled-components";
 
 export const PointsTableStyles = styled.table`
-  margin-top: 50px;
-  border: 1px solid black;
+  margin-top: 30px;
+  border-collapse: collapse;
+
+  tr {
+    background-color: #ffffff;
+    :nth-child(even) {
+      background-color: rgb(60,59,103);
+      color: #ffffff;
+    }
+  }
 
   th {
     background-color: #000000;
@@ -10,8 +18,15 @@ export const PointsTableStyles = styled.table`
   }
 
   td, th {
-    border: 1px solid black;
-    width: 100px;
     text-align: center;
+    padding: 5px 0;
+  }
+
+  caption {
+    color: #ffffff;
+    background: #000000;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-bottom: 1px solid #cccccc;
   }
 `;

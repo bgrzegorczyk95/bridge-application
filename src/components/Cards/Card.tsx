@@ -23,8 +23,8 @@ export const Card = ({ isVisible, position, user, cards, place, cardsAmount, han
 
   return (
     position ? (
-      <CardsWrapper margin={`-${(((cards?.length || cardsAmount) / 2) * 40) - 20}px`} position={position}>
-        {cardsList?.length ? <PlayerName position={position}>{user || ''}</PlayerName> : null}
+      <CardsWrapper margin={`-${(((cards?.length || cardsAmount) / 2) * 40) - 20}px`} position={position} isVisible={isVisible}>
+        {cardsList?.length ? <PlayerName isVisible={isVisible} position={position}>{`[${place}]${user}` || ''}</PlayerName> : null}
         {cardsList?.length ? (
           cardsList?.map((card: Card, index: number) => (
             <CardWrapper

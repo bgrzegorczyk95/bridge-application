@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuction } from '../../../hook/useAuction';
 import { auctionOptions } from '../../../utilities/auctionOptions';
 import { checkIfDoubledAndRedoubled } from '../../../utilities/checkIfDoubledAndRedoubled';
-import { AuctionRowStyles, ColorStyles, AuctionColStyles, PassStyles, XStyles, AuctionValue } from './AuctionStyles';
+import { AuctionRowStyles, ColorStyles, AuctionColStyles, PassStyles, XStyles, AuctionValue, BiddingWrapper, BiddingContent } from './AuctionStyles';
 
 interface Props {
   socket: any;
@@ -33,19 +33,23 @@ export const Auction = ({ game, player, socket, gameId }: Props) => {
   }
 
   return (
-    <>
-      {auctionOptions.values.map((value: string, i: number) => (
-        <AuctionRowStyles key={`option${i}`}>
-          {auctionOptions.colors.map((color: { name: string, image: string }, j: number) => (
-            renderCol(i, j, value, color)
+    (game.statuses.auctionStarted && game?.turn.place === player?.place) ? (
+      <BiddingWrapper>
+        <BiddingContent>
+          {auctionOptions.values.map((value: string, i: number) => (
+            <AuctionRowStyles key={`option${i}`}>
+              {auctionOptions.colors.map((color: { name: string, image: string }, j: number) => (
+                renderCol(i, j, value, color)
+              ))}
+            </AuctionRowStyles>
           ))}
-        </AuctionRowStyles>
-      ))}
-      <AuctionRowStyles>
-        <PassStyles onClick={setPass}>PASS</PassStyles>
-        <XStyles onClick={() => isDoubled && setDoubled()} disabled={!isDoubled}>X</XStyles> 
-        <XStyles onClick={() => isRedoubled && setRedoubled()} disabled={!isRedoubled}>XX</XStyles> 
-      </AuctionRowStyles>
-    </>
-  )
-}
+          <AuctionRowStyles>
+            <PassStyles onClick={setPass}>PASS</PassStyles>
+            <XStyles onClick={() => isDoubled && setDoubled()} disabled={!isDoubled}>X</XStyles> 
+            <XStyles onClick={() => isRedoubled && setRedoubled()} disabled={!isRedoubled}>XX</XStyles> 
+          </AuctionRowStyles>
+        </BiddingContent>
+      </BiddingWrapper>
+    ) : null
+  );
+};

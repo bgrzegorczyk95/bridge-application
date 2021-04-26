@@ -7,7 +7,6 @@ export const Navbar = () => {
     <NarbarWrapper>
       <ListStyles>
         <li><NavLink to="/">Strona główna</NavLink></li>
-        <li><NavLink to="/rules">Zasady</NavLink></li>
         <li><NavLink to="/tables">Stoły</NavLink></li>
       </ListStyles>
     </NarbarWrapper>

@@ -21,6 +21,6 @@ export const ReadyStatus = ({ places, setIsReady, showCountDown, handleStartGame
         </ReadyStatusStyles>
       ))}
     </SectionStyles>
-    {showCountDown && <CountDown seconds={5} startGame={handleStartGame} />}
+    {showCountDown && <CountDown color="white" text="Gra rozpocznie się za" seconds={5} handleEndTime={handleStartGame} />}
   </ReadyStatusWrapperStyles>
 )

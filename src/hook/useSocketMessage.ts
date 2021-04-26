@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 
 const initialTrump = { userName: undefined, colorName: undefined, value: undefined, place: undefined };
 const initialBestBid = { userName: undefined, colorName: undefined, value: undefined, place: undefined, doubled: false, redoubled: false };
@@ -6,6 +7,7 @@ const initialBestBid = { userName: undefined, colorName: undefined, value: undef
 const initialGamePoints = { NS: { under: [0], above: 0, round: 0, games: 0 }, EW: { under: [0], above: 0, round: 0, games: 0 }, afterPart: [], games: 0 };
 const initialUser = { place: undefined, takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
 
+const initialPlayer = { takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
 const players = [
   { place: 'N', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
   { place: 'S', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
@@ -28,9 +30,14 @@ const setCurrentPlayer = (users) => {
 };
 
 export const useSocketMessage = (socket: any, gameId: number) => {
+  const history = useHistory();
   const [player, setPlayer] = useState<any>(initialUser);
   const [userName, setUserName] = useState<string | undefined>('Ziom');
   const [games, setGames] = useState([]);
+
+  const resetGame = () => {
+    socket.send(JSON.stringify({ method: 'resetGame', gameId }));
+  };
 
   socket.onmessage = (message) => {
     const response = JSON.parse(message.data);
@@ -77,14 +84,11 @@ export const useSocketMessage = (socket: any, gameId: number) => {
     if (response?.method === 'bestThrow') {
       const { thrownCards, turn, throws, gamePoints } = response;
       gamesChanged[gameId] = { ...gamesChanged[gameId], turn, thrownCards, gamePoints };
-
-      console.log(throws, gamePoints);
     }
 
     if (response?.method === 'newDeal') {
-      const { players, turn, points, statuses, gamePoints } = response;
+      const { players, turn, statuses, gamePoints } = response;
 
-      console.log('NEW', points);
       gamesChanged[gameId] = {
         ...gamesChanged[gameId],
         turn,
@@ -100,6 +104,23 @@ export const useSocketMessage = (socket: any, gameId: number) => {
       setPlayer(player);
     }
 
+    if (response?.method === 'endGame') {
+      const { statuses, gamePoints } = response;
+      gamesChanged[gameId] = { ...gamesChanged[gameId], statuses, gamePoints };
+    }
+
+    if (response?.method === 'resetGame') {
+      const { game } = response;
+      gamesChanged[gameId] = { ...game, gameId };
+      setPlayer(initialUser);
+    }
+
+    if (response?.method === 'clean') {
+      const { clientId } = response;
+      gamesChanged[gameId].players = gamesChanged[gameId].players.map((player) => player.uuid === clientId ? ({ ...initialPlayer, place: player.place }) : player);
+      setPlayer(initialUser);
+    }
+
     setGames(gamesChanged);
   };
 
@@ -111,5 +132,6 @@ export const useSocketMessage = (socket: any, gameId: number) => {
     userName,
     clientId,
     setPlayer,
+    resetGame,
   }
 };

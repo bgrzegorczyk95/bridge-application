@@ -1,34 +1,112 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const cardsPosition = (isVisible, position: string) => {
+  const positions = {
+    BOTTOM: css`
+      bottom: 65px;
+      transform: translateX(-110px);
+
+      @media (max-width: 600px) {
+        bottom: 50px;
+      }
+    `,
+    TOP: css`
+      top: 65px;
+      transform: translateX(-110px);
+
+      @media (max-width: 600px) {
+        transform: ${!isVisible && 'none'};
+        top: 60px;
+      }
+    `,
+    LEFT: css`
+      left: 65px;
+      transform: rotate(90deg) translateX(-110px);
+
+      @media (max-width: 600px) {
+        transform: ${!isVisible && 'none'};
+        left: 50px;
+      }
+    `,
+    RIGHT: css`
+      right: 65px;
+      transform: rotate(90deg) translateX(-110px);
+
+      @media (max-width: 600px) {
+        transform: ${!isVisible && 'none'};
+        right: 58px;
+      }
+    `,
+  };
+
+  return positions[position];
+}
+
+const playerNamePosition = (isVisible, position: string) => {
+  const positions =  {
+    BOTTOM: css`
+      bottom: 60px;
+
+      @media (max-width: 600px) {
+        bottom: ${isVisible ? '60px' : '10px'};
+      }
+    `,
+    TOP: css`
+      top: 65px;
+
+      @media (max-width: 600px) {
+        top: ${isVisible ? '60px' : '-50px'};
+      }
+    `,
+    LEFT: css`
+      bottom: 90px;
+      transform: rotate(270deg);
+      overflow: hidden;
+      max-width: 80px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @media (max-width: 600px) {
+        bottom: ${isVisible ? '90px' : '50%'};
+        transform: ${!isVisible && 'translate(-8px, 0)'};
+      }
+    `,
+    RIGHT: css`
+      top: 90px;
+      transform: rotate(270deg);
+      overflow: hidden;
+      max-width: 80px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @media (max-width: 600px) {
+        top: ${isVisible ? '90px' : '50%'};
+        transform: ${!isVisible && 'translate(25px, -100%)'};
+      }
+    `,
+  };
+
+  return positions[position];
+}
 
 export const CardWrapper = styled.div<any>`
   width: 80px;
   height: 110px;
-  border-radius: 5px;
   position: absolute;
   overflow: hidden;
-  top: ${({ position }) => (position === 'TOP' || position === 'RIGHT') && '10px'};
-  bottom: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '10px'};
   margin-left: ${({ margin }) => margin};
-  ${({ styles }) => styles}
 
-  @media (min-width: 900px) {
-    &:hover {
-      cursor: pointer;
-      margin-bottom: ${({ isVisible }) => isVisible && '10px'};
-    }
-  }
-
-  @media (max-width: 900px) {
-    width: 70px;
-    height: 100px;
-
-    top: ${({ position }) => (position === 'TOP' || position === 'RIGHT') && '0'};
-    bottom: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '0'};
+  @media (max-width: 600px) {
+    display: ${({ isVisible }) => !isVisible && 'none'};
   }
 
   @media (max-width: 500px) {
-    width: 50px;
-    height: 80px;
+    width: 60px;
+    height: 90px;
+  }
+
+  :hover {
+    margin-bottom: ${({ isVisible }) => isVisible && '10px'};
   }
 `;
 
@@ -37,14 +115,8 @@ export const CardsWrapper = styled.div<any>`
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: ${({ position }) => position === 'TOP' && '0'};
-  right: ${({ position }) => position === 'RIGHT' && '20px'};
-  bottom: ${({ position }) => position === 'BOTTOM' && '0'};
-  left: ${({ position }) => position === 'LEFT' && '20px'};
-  transform: ${({ position }) => (position === 'LEFT' || position === 'RIGHT') && 'rotate(90deg)'};
-  margin-left: ${({ position, margin }) => (position === 'TOP' || position === 'BOTTOM') && margin};
-  margin-top: ${({ position, margin }) => (position === 'LEFT' || position === 'RIGHT') && margin};
-  ${({ styles }) => styles}
+
+  ${({ isVisible, position }) => cardsPosition(isVisible, position)};
 `;
 
 export const SingleCard = styled.img<any>`
@@ -53,14 +125,8 @@ export const SingleCard = styled.img<any>`
   cursor: pointer;
   position: relative;
 
-  @media (max-width: 900px) {
-    margin-top: ${({ position }) => (position === 'TOP' || position === 'RIGHT') && '-35px'};
-    margin-top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '35px'};
-
-    &:hover {
-      margin-top: ${({ position, isVisible }) => (isVisible && (position === 'TOP' || position === 'RIGHT')) && '-25px'};
-      margin-top: ${({ position, isVisible }) => (isVisible && (position === 'BOTTOM' || position === 'LEFT')) && '25px'};
-    }
+  @media (max-width: 600px) {
+    display: ${({ position, isVisible }) => ((position !== 'BOTTOM' && !isVisible) && 'none')};
   }
 `;
 
@@ -85,26 +151,12 @@ export const PlayerName = styled.div<any>`
   color: #ffffff;
   font-weight: bold;
   white-space: nowrap;
-  bottom: ${({ position }) => (position === 'TOP' ||  position === 'RIGHT') && '-145px'};
-  top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '-145px'};
-  left: 0;
-  transform: ${({ position }) => position === 'RIGHT' && 'rotate(180deg)'};
-
-  @media (max-width: 900px) {
-    bottom: ${({ position }) => (position === 'TOP' ||  position === 'RIGHT') && '-95px'};
-    top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '-95px'};
-  }
-
-  @media (max-width: 500px) {
-    bottom: ${({ position }) => (position === 'TOP' ||  position === 'RIGHT') && '-75px'};
-    top: ${({ position }) => (position === 'BOTTOM' || position === 'LEFT') && '-75px'};
-  }
+  
+  ${({ isVisible, position }) => playerNamePosition(isVisible, position)};
 `;
 
 export const PlayerNameInitial = styled.div<any>`
   position: absolute;
-  top: ${({ position }) => position === 'TOP' && '50px'};
-  bottom: ${({ position }) => position === 'BOTTOM' && '50px'};
   color: #ffffff;
   font-weight: bold;
   background-color: #595959;
