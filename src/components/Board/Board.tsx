@@ -26,6 +26,7 @@ export const Board = ({ socket, gameId }: any) => {
   return (
     game ? (
     <BoardWrapper>
+      {console.log(player)}
       <Wrapper>
         <Modal isOpen={statuses?.endGame}><EndGame resetGame={resetGame} game={game} /></Modal>
         {game?.statuses.auctionStarted && <Auction game={game} socket={socket} gameId={gameId} player={player} />}

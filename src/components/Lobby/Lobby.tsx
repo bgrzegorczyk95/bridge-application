@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { LobbyWrapper, PlayerCard, Button, CloseIcon, ReadyStyles, NotReadyStyles, LobbyContent, LobbyHeader, PlayerName } from './LobbyStyles';
 import { SocketContext } from '../App/App';
 import { CountDown } from '../CountDown/CountDown';
-import { useHistory, useParams } from 'react-router';
 
 interface Props {
   gameId: number;
@@ -10,7 +9,6 @@ interface Props {
 }
 
 export const Lobby = ({ gameId, socket }: Props) => {
-  const history = useHistory();
   const { clientId, userName, player, games, setPlayer } = useContext(SocketContext);
   const game = games[gameId];
   const allPlacesTaken = game.players.every((user) => user.name);
@@ -27,6 +25,7 @@ export const Lobby = ({ gameId, socket }: Props) => {
     };
 
     setPlayer({ ...player, place });
+    localStorage.setItem('gameId', gameId.toString());
     socket.send(JSON.stringify(payLoad));
   };
 
@@ -71,7 +70,7 @@ export const Lobby = ({ gameId, socket }: Props) => {
                 Wybierz
               </Button>
             )}
-            {(item.name === player.name && item.place === player.place && !isStarted) && (
+            {(item.uuid === player.uuid && item.place === player.place && !isStarted) && (
               <CloseIcon onClick={handleClose}>&#10006;</CloseIcon>
             )}
             {(!game.statuses.auctionStarted && !game.statuses.gameStarted && allPlacesTaken) && (

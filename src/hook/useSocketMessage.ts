@@ -1,24 +1,9 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router';
 
-const initialTrump = { userName: undefined, colorName: undefined, value: undefined, place: undefined };
-const initialBestBid = { userName: undefined, colorName: undefined, value: undefined, place: undefined, doubled: false, redoubled: false };
+const initialPlayer = { place: undefined, takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
 
-const initialGamePoints = { NS: { under: [0], above: 0, round: 0, games: 0 }, EW: { under: [0], above: 0, round: 0, games: 0 }, afterPart: [], games: 0 };
-const initialUser = { place: undefined, takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
-
-const initialPlayer = { takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
-const players = [
-  { place: 'N', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
-  { place: 'S', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
-  { place: 'E', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
-  { place: 'W', takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false },
-];
-
-let clientId;
-
-const setCurrentPlayer = (users) => {
-  let player = { ...initialUser };
+const setCurrentPlayer = (users, clientId: string) => {
+  let player = { ...initialPlayer };
 
   users.forEach((user) => {
     if (user?.uuid === clientId) {
@@ -29,9 +14,8 @@ const setCurrentPlayer = (users) => {
   return player;
 };
 
-export const useSocketMessage = (socket: any, gameId: number) => {
-  const history = useHistory();
-  const [player, setPlayer] = useState<any>(initialUser);
+export const useSocketMessage = (socket: any, gameId: number, clientId: string, setId: any) => {
+  const [player, setPlayer] = useState<any>(initialPlayer);
   const [userName, setUserName] = useState<string | undefined>('Ziom');
   const [games, setGames] = useState([]);
 
@@ -44,18 +28,37 @@ export const useSocketMessage = (socket: any, gameId: number) => {
     let gamesChanged = [...games];
 
     if (response.method === 'connect') {
-      clientId = response.clientId;
       gamesChanged = [...response.games];
+
+      if (!clientId) {
+        setId(response.clientId);
+        localStorage.setItem('clientId', response.clientId);
+      } else if (gameId || gameId === 0) {
+        const players = gamesChanged[gameId].players;
+        const player = setCurrentPlayer(players, clientId);
+
+        setPlayer(player);
+        localStorage.setItem('clientId', clientId);
+      }
     }
 
     if (response?.method === 'updatePlaces') {
       const users = response.users;
       gamesChanged[gameId] = { ...gamesChanged[gameId], players: users };
 
-      const player = setCurrentPlayer(users);
+      const player = setCurrentPlayer(users, clientId);
       setPlayer(player);
+    }
 
-      localStorage.setItem('player', JSON.stringify(player));
+    if (response.method === 'update') {
+      gamesChanged = [...response.games];
+
+      if ((gameId || gameId === 0) && gameId === response.gameId) {
+        const players = response.games[response.gameId].players;
+        const player = setCurrentPlayer(players, clientId);
+
+        setPlayer(player);
+      }
     }
 
     if (response?.method === 'startBidding') {
@@ -73,7 +76,7 @@ export const useSocketMessage = (socket: any, gameId: number) => {
 
       gamesChanged[gameId] = { ...gamesChanged[gameId], turn, thrownCards, players };
 
-      const player = setCurrentPlayer(players);
+      const player = setCurrentPlayer(players, clientId);
       setPlayer(player);
 
       if (thrownCards.length === 4) {
@@ -82,26 +85,8 @@ export const useSocketMessage = (socket: any, gameId: number) => {
     }
 
     if (response?.method === 'bestThrow') {
-      const { thrownCards, turn, throws, gamePoints } = response;
+      const { thrownCards, turn, gamePoints } = response;
       gamesChanged[gameId] = { ...gamesChanged[gameId], turn, thrownCards, gamePoints };
-    }
-
-    if (response?.method === 'newDeal') {
-      const { players, turn, statuses, gamePoints } = response;
-
-      gamesChanged[gameId] = {
-        ...gamesChanged[gameId],
-        turn,
-        statuses,
-        players,
-        gamePoints,
-        biddingHistory: [],
-        thrownCards: [],
-        bestBid: { ...initialBestBid },
-      };
-
-      const player = setCurrentPlayer(players);
-      setPlayer(player);
     }
 
     if (response?.method === 'endGame') {
@@ -111,14 +96,20 @@ export const useSocketMessage = (socket: any, gameId: number) => {
 
     if (response?.method === 'resetGame') {
       const { game } = response;
-      gamesChanged[gameId] = { ...game, gameId };
-      setPlayer(initialUser);
+      gamesChanged[response.gameId] = { ...game };
+
+      if (response.gameId === gameId) {
+        setPlayer(initialPlayer);
+      }
     }
 
     if (response?.method === 'clean') {
       const { clientId } = response;
-      gamesChanged[gameId].players = gamesChanged[gameId].players.map((player) => player.uuid === clientId ? ({ ...initialPlayer, place: player.place }) : player);
-      setPlayer(initialUser);
+      gamesChanged[gameId].players = gamesChanged[gameId].players
+        .map((player) => player.uuid === clientId ? ({...initialPlayer, place: player.place }) : player);
+
+      setPlayer(initialPlayer);
+      localStorage.removeItem('gameId');
     }
 
     setGames(gamesChanged);

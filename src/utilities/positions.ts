@@ -24,8 +24,8 @@ const positions: { [key: string]: { [key: string]: string } } = {
 const observerPositions: { [key: string]: string } = {
   N: 'TOP',
   S: 'BOTTOM',
-  E: 'LEFT',
-  W: 'RIGHT',
+  E: 'RIGHT',
+  W: 'LEFT',
 };
 
 export const setPosition = (place: any, clientId: any, player: any) => {

@@ -8,6 +8,7 @@ export const TablesWrapper = styled.div`
   height: calc(100vh - 52px);
   padding-top: 20px;
   background: #cccccc;
+  box-sizing: border-box;
 
   button {
     width: 100px;

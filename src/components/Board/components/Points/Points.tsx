@@ -10,6 +10,7 @@ export const Points = ({ points, isEndGame }: Props) => {
   return (
     <PointsTableStyles>
       <caption>Punkty</caption>
+      <tbody>
       <tr>
         <td>{points?.NS.above || 0}</td>
         <td>{points?.EW.above || 0}</td>
@@ -25,7 +26,7 @@ export const Points = ({ points, isEndGame }: Props) => {
         </tr>
       ))}
       {isEndGame ? (
-        <tbody>
+        <>
           <tr>
             <th>Wynik</th>
             <th>Wynik</th>
@@ -34,8 +35,9 @@ export const Points = ({ points, isEndGame }: Props) => {
             <td>{points?.NS.score || 0}</td>
             <td>{points?.EW.score || 0}</td>
           </tr>
-        </tbody>
+        </>
       ) : null}
+      </tbody>
     </PointsTableStyles>
   );
 };

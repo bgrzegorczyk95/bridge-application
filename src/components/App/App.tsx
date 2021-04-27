@@ -3,7 +3,6 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { useSocketMessage } from '../../hook/useSocketMessage';
 import { Board } from '../Board/Board';
-import { Lobby } from '../Lobby/Lobby';
 import { Main } from '../Main/Main';
 import { Navbar } from '../Navbar/Navbar';
 import { Tables } from '../Tables/Tables';
@@ -14,14 +13,19 @@ export const SocketContext = React.createContext(null);
 export const App = () => {
   const history = useHistory();
   const [gameId, setGameId] = useState<number | undefined>();
-  const socketMessage = useSocketMessage(socket, gameId);
+  const [clientId, setClientId] = useState<string | undefined>();
+  const socketMessage = useSocketMessage(socket, gameId, clientId, setClientId);
 
   socket.onopen = (() => {
-    const clientId = localStorage.getItem('clientId');
+    const client = localStorage.getItem('clientId');
+    const gameId = localStorage.getItem('gameId');
+
+    if (gameId) setGameId(parseInt(gameId, 10));
+    setClientId(client);
 
     const payload = {
       method: 'connect',
-      clientId,
+      clientId: client,
     };
 
     socket.send(JSON.stringify(payload));
