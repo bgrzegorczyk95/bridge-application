@@ -14,9 +14,21 @@ const setCurrentPlayer = (users, clientId: string) => {
   return player;
 };
 
+const checkIfPlayerInGame = (game, clientId) => {
+  let isPlayerInGame = false;
+
+  game?.players.forEach((player: any) => {
+    if (player?.uuid === clientId) {
+      isPlayerInGame = true;
+    }
+  });
+
+  return isPlayerInGame;
+};
+
 export const useSocketMessage = (socket: any, gameId: number, clientId: string, setId: any) => {
   const [player, setPlayer] = useState<any>(initialPlayer);
-  const [userName, setUserName] = useState<string | undefined>('Ziom');
+  const [userName, setUserName] = useState<string | undefined>('');
   const [games, setGames] = useState([]);
 
   const resetGame = () => {
@@ -33,12 +45,19 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
       if (!clientId) {
         setId(response.clientId);
         localStorage.setItem('clientId', response.clientId);
+        localStorage.removeItem('gameId');
       } else if (gameId || gameId === 0) {
-        const players = gamesChanged[gameId].players;
-        const player = setCurrentPlayer(players, clientId);
+        const isPlayerInGame = checkIfPlayerInGame(gamesChanged[gameId], clientId);
 
-        setPlayer(player);
-        localStorage.setItem('clientId', clientId);
+        if (isPlayerInGame) {
+          const players = gamesChanged[gameId].players;
+          const player = setCurrentPlayer(players, clientId);
+  
+          setPlayer(player);
+          localStorage.setItem('clientId', clientId);
+        } else {
+          localStorage.removeItem('gameId');
+        }
       }
     }
 
@@ -95,11 +114,12 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
     }
 
     if (response?.method === 'resetGame') {
-      const { game } = response;
-      gamesChanged[response.gameId] = { ...game };
+      const { games } = response;
+      gamesChanged[response.gameId] = { ...games[response.gameId] };
 
       if (response.gameId === gameId) {
         setPlayer(initialPlayer);
+        localStorage.removeItem('gameId');
       }
     }
 
@@ -124,5 +144,6 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
     clientId,
     setPlayer,
     resetGame,
+    setUserName,
   }
 };

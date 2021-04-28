@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { LobbyWrapper, PlayerCard, Button, CloseIcon, ReadyStyles, NotReadyStyles, LobbyContent, LobbyHeader, PlayerName } from './LobbyStyles';
 import { SocketContext } from '../App/App';
 import { CountDown } from '../CountDown/CountDown';
@@ -14,6 +14,10 @@ export const Lobby = ({ gameId, socket }: Props) => {
   const allPlacesTaken = game.players.every((user) => user.name);
   const allPlayersReady = game.players.every((user) => user.isReady);
   const [isStarted, setIsStarted] = useState(game.statuses.auctionStarted || game.statuses.gameStarted);
+
+  useEffect(() => {
+    setIsStarted(game.statuses.auctionStarted || game.statuses.gameStarted);
+  }, [game?.statuses.auctionStarted, game?.statuses.gameStarted]);
 
   const handleSelectPosition = (place: any) => {
     const payLoad = {

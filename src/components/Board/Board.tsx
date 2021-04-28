@@ -16,6 +16,7 @@ import { EndGame } from './components/EndGame/EndGame';
 import { HamburgerButton } from './components/HamburgerButton/HamburgerButton';
 import { BiddingCards } from './components/BiddingCards/BiddingCards';
 import { Lobby } from '../Lobby/Lobby';
+import { Waiting } from './components/Waiting/Waiting';
 
 export const Board = ({ socket, gameId }: any) => {
   const [isVisibleTable, setIsVisibleTable] = useState(false);
@@ -26,10 +27,10 @@ export const Board = ({ socket, gameId }: any) => {
   return (
     game ? (
     <BoardWrapper>
-      {console.log(player)}
       <Wrapper>
         <Modal isOpen={statuses?.endGame}><EndGame resetGame={resetGame} game={game} /></Modal>
         {game?.statuses.auctionStarted && <Auction game={game} socket={socket} gameId={gameId} player={player} />}
+        {game?.statuses.waitingForPlayers && <Waiting resetGame={resetGame}/>}
         {isStartedAuctionOrGame && game?.players?.map((item: any, index: number) => (
           <Card
             key={index}
@@ -42,7 +43,7 @@ export const Board = ({ socket, gameId }: any) => {
             handleClickCard={(card: any) => handleClickCard(card, item)}
           />
         ))}
-        {game?.bestBid.value && (
+        {game?.bestBid?.value && (
           <Info
             game={game}
             value={game.bestBid.value}

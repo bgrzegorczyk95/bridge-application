@@ -1,8 +1,12 @@
 import React from 'react';
-import { MainStyles } from './MainStyles';
+import { MainStyles, MainContent } from './MainStyles';
 
 export const Main = () => {
   return (
-    <MainStyles>ES</MainStyles>
+    <MainStyles>
+      <MainContent>
+        es
+      </MainContent>
+    </MainStyles>
   );
 };
