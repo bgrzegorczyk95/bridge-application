@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PlayerNameModalStyles, ModalWrapperStyles, Input, Button, ErrorInfo } from './PlayerNameModalStyles';
 
 interface Props {
-  onSubmit: any;
+  onSubmit: (name: string) => void;
+  userName: string;
 }
 
-export const PlayerNameModal = ({ onSubmit }: Props) => {
-  const [name, setName] = useState<string | undefined>();
+export const PlayerNameModal = ({ userName, onSubmit }: Props) => {
+  const [name, setName] = useState<string | undefined>(userName);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
+
+  useEffect(() => setName(userName) ,[userName]);
 
   const checkValidation = (value: string) => {
     let error = '';
@@ -55,10 +58,10 @@ export const PlayerNameModal = ({ onSubmit }: Props) => {
           autoComplete="off"
           placeholder="wpisz imię"
           value={name}
-          onChange={(e: any) => handleChange(e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
         <ErrorInfo>{error}</ErrorInfo>
-        <Button type="submit" onClick={(e: any) => handleSubmit(name)}>
+        <Button type="submit" onClick={() => handleSubmit(name)}>
           Zatwierdź
         </Button>
       </ModalWrapperStyles>

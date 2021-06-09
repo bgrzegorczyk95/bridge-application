@@ -1,14 +1,14 @@
-import React from 'react';
+import { Game, Player } from '../../@types/types';
 import { TablesWrapper, TableStyles } from './TablesStyles';
 
 interface Props {
-  tabs: any;
+  games: Game[];
   handleSelect: (id: number) => void;
 }
 
-const countPlayers = (players: any) => players.filter((player: any) => player.takenPlace).length;
+const countPlayers = (players: Player[]) => players.filter((player) => player.takenPlace).length;
 
-export const Tables = ({ tabs, handleSelect }: Props) => {
+export const Tables = ({ games, handleSelect }: Props) => {
   return (
     <TablesWrapper>
       <TableStyles>
@@ -20,11 +20,11 @@ export const Tables = ({ tabs, handleSelect }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {tabs?.map((tab: any, i: number) => (
+          {games?.map((game: Game, i: number) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{`${countPlayers(tab.players)}/4`}</td>
-              <td><button onClick={() => handleSelect(tab.gameId)}>Wejdź</button></td>
+              <td>{`${countPlayers(game.players)}/4`}</td>
+              <td><button onClick={() => handleSelect(game.gameId)}>Wejdź</button></td>
             </tr>
           ))}
         </tbody>

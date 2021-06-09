@@ -82,4 +82,5 @@ export const PlayerName = styled.p`
   max-width: 100px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin: 0;
 `;

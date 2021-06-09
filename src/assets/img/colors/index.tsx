@@ -18,7 +18,7 @@ export const colors = {
   clubsDisabled,
 };
 
-export const colorTypes = {
+export const colorTypes: { [key: string]: string } = {
   S: spades,
   H: hearts,
   D: diamonds,

@@ -1,17 +1,17 @@
-import React from 'react';
-import { BiddingTableStyles, BiddingTableWrapper } from './BiddingTableStyles';
+import { Bid } from '../../../../@types/types';
+import { BiddingTableStyles } from './BiddingTableStyles';
 
 interface Props {
-  biddingHistory: any;
+  biddingHistory: Bid[];
 }
 
-const biddingEmptySlots = {
+const biddingEmptySlots: { [key: string]: number } = {
   E: 1,
   S: 2,
   W: 3,
 };
 
-const checkEmptySlots = (biddingHistory) => {
+const checkEmptySlots = (biddingHistory: Bid[]) => {
   const rowWithEmptySlots = [];
 
   if (biddingHistory && biddingHistory[0]?.place !== 'N') {
@@ -23,11 +23,11 @@ const checkEmptySlots = (biddingHistory) => {
   return rowWithEmptySlots;
 };
 
-const setHistory = (biddingHistory: any) => {
-  const history = [];
-  let row = checkEmptySlots(biddingHistory);
+const setHistory = (biddingHistory: Bid[]) => {
+  const history: any = [];
+  let row: any = checkEmptySlots(biddingHistory);
 
-  biddingHistory?.forEach((bid, index: number) => {
+  biddingHistory?.forEach((bid: Bid, index: number) => {
     row.push(bid);
 
     if (bid.place === 'W' || index === (biddingHistory?.length - 1)) {
@@ -41,6 +41,7 @@ const setHistory = (biddingHistory: any) => {
 
 export const BiddingTable = ({ biddingHistory }: Props) => {
   const history = setHistory(biddingHistory);
+
   return (
     <BiddingTableStyles>
       <caption>Licytacja</caption>

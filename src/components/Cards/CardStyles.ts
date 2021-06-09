@@ -1,7 +1,13 @@
-import styled, { css } from 'styled-components';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
-const cardsPosition = (isVisible, position: string) => {
-  const positions = {
+interface Props {
+  isVisible?: number;
+  position?: string;
+  margin?: string;
+}
+
+const cardsPosition = (isVisible: number, position: string): FlattenSimpleInterpolation => {
+  const positions: { [key: string]: FlattenSimpleInterpolation } = {
     BOTTOM: css`
       bottom: 65px;
       transform: translateX(-110px);
@@ -42,8 +48,8 @@ const cardsPosition = (isVisible, position: string) => {
   return positions[position];
 }
 
-const playerNamePosition = (isVisible, position: string) => {
-  const positions =  {
+const playerNamePosition = (isVisible: number, position: string): FlattenSimpleInterpolation => {
+  const positions: { [key: string]: FlattenSimpleInterpolation } =  {
     BOTTOM: css`
       bottom: 60px;
 
@@ -89,7 +95,26 @@ const playerNamePosition = (isVisible, position: string) => {
   return positions[position];
 }
 
-export const CardWrapper = styled.div<any>`
+const initialPlayerPosition = (position: string): FlattenSimpleInterpolation => {
+  const positions: { [key: string]: FlattenSimpleInterpolation } = {
+    BOTTOM: css`
+      bottom: 65px;
+    `,
+    TOP: css`
+      top: 65px;
+    `,
+    LEFT: css`
+      left: 65px;
+    `,
+    RIGHT: css`
+      right: 65px;
+    `,
+  };
+
+  return positions[position];
+}
+
+export const CardWrapper = styled.div<Props>`
   width: 80px;
   height: 110px;
   position: absolute;
@@ -110,7 +135,7 @@ export const CardWrapper = styled.div<any>`
   }
 `;
 
-export const CardsWrapper = styled.div<any>`
+export const CardsWrapper = styled.div<Props>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -119,7 +144,7 @@ export const CardsWrapper = styled.div<any>`
   ${({ isVisible, position }) => cardsPosition(isVisible, position)};
 `;
 
-export const SingleCard = styled.img<any>`
+export const SingleCard = styled.img<Props>`
   width: 100%;
   height: 100%;
   cursor: pointer;
@@ -146,7 +171,7 @@ export const SignBottomRight = styled.span`
   font-weight: bold;
 `;
 
-export const PlayerName = styled.div<any>`
+export const PlayerName = styled.div<Props>`
   position: ${({ position }) => position ? 'absolute' : 'relative'};
   color: #ffffff;
   font-weight: bold;
@@ -155,11 +180,13 @@ export const PlayerName = styled.div<any>`
   ${({ isVisible, position }) => playerNamePosition(isVisible, position)};
 `;
 
-export const PlayerNameInitial = styled.div<any>`
+export const PlayerNameInitial = styled.div<Props>`
   position: absolute;
   color: #ffffff;
   font-weight: bold;
   background-color: #595959;
   border: 1px solid #595959;
   padding: 5px;
+
+  ${({ position }) => initialPlayerPosition(position)};
 `

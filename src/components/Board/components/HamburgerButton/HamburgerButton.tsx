@@ -1,9 +1,8 @@
-import React from 'react';
 import { BarOne, BarThree, BarTwo, HamburgerButtonWrapper } from './HamburgerButtonStyles';
 
 interface Props {
   isVisible: boolean;
-  handleChange: any;
+  handleChange: () => void;
 }
 
 export const HamburgerButton = ({ isVisible, handleChange }: Props) => {

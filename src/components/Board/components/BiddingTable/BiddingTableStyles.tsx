@@ -23,6 +23,7 @@ export const BiddingTableStyles = styled.table`
   td, th {
     text-align: center;
     padding: 5px 0;
+    width: 100px;
   }
 
   caption {

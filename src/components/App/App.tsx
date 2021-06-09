@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
+import { SocketContextInterface } from '../../@types/types';
 
 import { useSocketMessage } from '../../hook/useSocketMessage';
 import { Board } from '../Board/Board';
+import { ChangeName } from '../ChangeName/ChangeName';
 import { Navbar } from '../Navbar/Navbar';
 import { Tables } from '../Tables/Tables';
 import { UserNameCheck } from '../UserNameCheck/UserNameCheck';
+import { AppWrapper } from './AppStyles';
 
-const socket = new WebSocket('ws://localhost:5000');
-export const SocketContext = React.createContext(null);
+const socket: WebSocket = new WebSocket('ws://localhost:5000/');
+export const SocketContext = React.createContext<SocketContextInterface | null>(null);
 
 export const App = () => {
   const history = useHistory();
@@ -26,6 +29,7 @@ export const App = () => {
     const payload = {
       method: 'connect',
       clientId: client,
+      gameId,
     };
 
     socket.send(JSON.stringify(payload));
@@ -47,23 +51,23 @@ export const App = () => {
   };
 
   return (
-    <>
-      <Navbar />
+    <AppWrapper>
       <SocketContext.Provider value={socketMessage}>
-        <Switch>
-          <UserNameCheck
-            user={socketMessage.userName}
-            setUserName={(name: string) => socketMessage.setUserName(name)}
-          >
-            <Route exact path="/">
-              <Tables handleSelect={handleSelect} tabs={socketMessage.games} />
-            </Route>
-            <Route exact path="/board/:id">
-              <Board gameId={gameId} socket={socket} />
-            </Route>
-          </UserNameCheck>
-        </Switch>
+        <UserNameCheck>
+          <Navbar />
+          <Switch>
+              <Route exact path="/">
+                <Tables handleSelect={handleSelect} games={socketMessage.games} />
+              </Route>
+              <Route exact path="/board/:id">
+                <Board gameId={gameId} socket={socket} />
+              </Route>
+              <Route exact path="/change">
+                <ChangeName />
+              </Route>
+          </Switch>
+        </UserNameCheck>
       </SocketContext.Provider>
-    </>
+    </AppWrapper>
   );
 };

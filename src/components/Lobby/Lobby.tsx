@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { LobbyWrapper, PlayerCard, Button, CloseIcon, ReadyStyles, NotReadyStyles, LobbyContent, LobbyHeader, PlayerName } from './LobbyStyles';
 import { SocketContext } from '../App/App';
 import { CountDown } from '../CountDown/CountDown';
+import { Player } from '../../@types/types';
 
 interface Props {
   gameId: number;
-  socket: any;
+  socket: WebSocket;
 }
 
 export const Lobby = ({ gameId, socket }: Props) => {
@@ -19,16 +20,16 @@ export const Lobby = ({ gameId, socket }: Props) => {
     setIsStarted(game.statuses.auctionStarted || game.statuses.gameStarted);
   }, [game?.statuses.auctionStarted, game?.statuses.gameStarted]);
 
-  const handleSelectPosition = (place: any) => {
+  const handleSelectPosition = (selectedPlace: Player) => {
     const payLoad = {
       method: "join",
       clientId,
       gameId,
       userName,
-      place: place.place,
+      place: selectedPlace.place,
     };
 
-    setPlayer({ ...player, place });
+    setPlayer({ ...player, ...selectedPlace });
     localStorage.setItem('gameId', gameId.toString());
     socket.send(JSON.stringify(payLoad));
   };
@@ -52,7 +53,7 @@ export const Lobby = ({ gameId, socket }: Props) => {
     }
   }
 
-  const setIsReady = (item: any) => {
+  const setIsReady = (item: Player) => {
     if (item?.uuid === clientId) {
       socket.send(JSON.stringify({ method: "ready", clientId, gameId }));
     }
@@ -66,7 +67,7 @@ export const Lobby = ({ gameId, socket }: Props) => {
     <LobbyWrapper>
       <LobbyHeader>Miejsca</LobbyHeader>
       <LobbyContent>
-        {game?.players.map((item: any) => (
+        {game?.players.map((item: Player) => (
           <PlayerCard key={item.place} isReady={item.isReady}>
             <PlayerName>{item.name ? item.name : item.place}</PlayerName>
             {!item.name && (

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 interface Props {
   playerPlace: string;
-  bestBidPlace: string;
+  trumpPlace: string;
 }
 
 export const InfoWrapper = styled.div<Props>`
@@ -12,10 +12,10 @@ export const InfoWrapper = styled.div<Props>`
   color: #ffffff;
 
   @media (max-width: 500px) {
-    top: ${({ playerPlace, bestBidPlace }) => (playerPlace === 'N' && (bestBidPlace === 'S' || bestBidPlace === 'N')) && '140px'};
-    top: ${({ playerPlace, bestBidPlace }) => (playerPlace === 'S' && (bestBidPlace === 'S' || bestBidPlace === 'N')) && '140px'};
-    top: ${({ playerPlace, bestBidPlace }) => (playerPlace === 'E' && (bestBidPlace === 'E' || bestBidPlace === 'W')) && '140px'};
-    top: ${({ playerPlace, bestBidPlace }) => (playerPlace === 'W' && (bestBidPlace === 'E' || bestBidPlace === 'W')) && '140px'};
+    top: ${({ playerPlace, trumpPlace }) => (playerPlace === 'N' && (trumpPlace === 'S' || trumpPlace === 'N')) && '140px'};
+    top: ${({ playerPlace, trumpPlace }) => (playerPlace === 'S' && (trumpPlace === 'S' || trumpPlace === 'N')) && '140px'};
+    top: ${({ playerPlace, trumpPlace }) => (playerPlace === 'E' && (trumpPlace === 'E' || trumpPlace === 'W')) && '140px'};
+    top: ${({ playerPlace, trumpPlace }) => (playerPlace === 'W' && (trumpPlace === 'E' || trumpPlace === 'W')) && '140px'};
   }  
 
   p {

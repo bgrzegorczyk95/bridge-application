@@ -1,4 +1,3 @@
-import React from 'react';
 import { ButtonStyles } from './ButtonStyles';
 
 interface Props {

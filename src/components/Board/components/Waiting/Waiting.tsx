@@ -1,9 +1,8 @@
-import React from 'react';
 import { CountDown } from '../../../CountDown/CountDown';
 import { WaitingWrapper, WaitingContent } from './WaitingStyles';
 
 interface Props {
-  resetGame: any;
+  resetGame: () => void;
 }
 
 export const Waiting = ({ resetGame }: Props) => {

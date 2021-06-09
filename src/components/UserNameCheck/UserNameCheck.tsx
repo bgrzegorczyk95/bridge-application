@@ -1,27 +1,27 @@
-import React from 'react';
+import { useContext } from 'react';
+import { SocketContext } from '../App/App';
 import { PlayerNameModal } from '../PlayerNameModal/PlayerNameModal';
 
 interface Props {
-  children: any;
-  user: any;
-  setUserName: any;
+  children: React.ReactNode;
 }
 
-export const UserNameCheck = ({ children, user, setUserName }: Props) => {
-  const userName = localStorage.getItem('userName') || user;
+export const UserNameCheck = ({ children }: Props) => {
+  const { setUserName, userName } = useContext(SocketContext);
+
+  const user = localStorage.getItem('userName') || userName;
 
   const handleSubmit = (name: string) => {
     setUserName(name);
     localStorage.setItem('userName', name);
   };
 
-  if (userName) {
-    console.log(userName);
-    setUserName(userName);
+  if (user) {
+    setUserName(user);
     return <>{children}</>;
   }
 
   return (
-    <PlayerNameModal onSubmit={handleSubmit} />
+    <PlayerNameModal userName={userName} onSubmit={handleSubmit} />
   )
 };

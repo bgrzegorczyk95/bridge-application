@@ -1,8 +1,8 @@
-import React from 'react';
+import { GamePoints } from '../../../../@types/types';
 import { PointsTableStyles } from './PointsStyles';
 
 interface Props {
-  points: any;
+  points: GamePoints;
   isEndGame: boolean;
 }
 
@@ -19,7 +19,7 @@ export const Points = ({ points, isEndGame }: Props) => {
         <th>NS</th>
         <th>EW</th>
       </tr>
-      {points?.NS.under?.map((row: any, index: number) => (
+      {points?.NS.under?.map((row: number, index: number) => (
         <tr key={index}>
           <td>{row}</td>
           <td>{points.EW.under[index] || 0}</td>

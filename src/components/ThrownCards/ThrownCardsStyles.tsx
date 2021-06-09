@@ -1,10 +1,10 @@
-import styled, { css } from "styled-components";
+import styled, { css, FlattenSimpleInterpolation } from "styled-components";
 
 interface Props {
   position: string;
 }
 
-const positions = {
+const positions: { [key: string]: { [key: string]: string } } = {
   N: {
     E: '38%',
     W: '61%',
@@ -23,7 +23,7 @@ const positions = {
   },
 };
 
-export const WrapperStyles = styled.div<{ bestBidPlace: string; playerPlace: string; }>`
+export const WrapperStyles = styled.div<{ trumpPlace: string; playerPlace: string; }>`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -34,11 +34,11 @@ export const WrapperStyles = styled.div<{ bestBidPlace: string; playerPlace: str
   @media (max-width: 600px) {
     width: 200px;
     height: 210px;
-    left: ${({ bestBidPlace, playerPlace }) => positions[playerPlace][bestBidPlace]};
+    left: ${({ trumpPlace, playerPlace }) => positions[playerPlace][trumpPlace]};
   }
 `;
 
-const positionsStyles = {
+const positionsStyles: { [key: string]: FlattenSimpleInterpolation } = {
   BOTTOM: css`
     bottom: 0;
     left: 50%;

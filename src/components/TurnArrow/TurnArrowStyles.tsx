@@ -1,13 +1,13 @@
-import styled, { css } from "styled-components";
+import styled, { css, FlattenSimpleInterpolation } from "styled-components";
 
 interface Props {
   position?: string;
-  bestBidPlace: string;
+  trumpPlace: string;
   playerPlace: string;
 }
 
-const arrowPositionStyles = (pos: string, bestBidPlace: string, playerPlace: string) => {
-  const position = {
+const arrowPositionStyles = (pos: string, trumpPlace: string, playerPlace: string): FlattenSimpleInterpolation => {
+  const position: { [key: string]: FlattenSimpleInterpolation } = {
     BOTTOM: css`
       left: 50%;
       bottom: 100px;
@@ -27,7 +27,7 @@ const arrowPositionStyles = (pos: string, bestBidPlace: string, playerPlace: str
       border-bottom: 25px solid #ffffff;
 
       @media (max-width: 600px) {
-        top: ${bestBidPlace === playerPlace ? '70px' : '0'};
+        top: ${trumpPlace === playerPlace ? '70px' : '0'};
       }
     `,
     LEFT: css`
@@ -38,7 +38,7 @@ const arrowPositionStyles = (pos: string, bestBidPlace: string, playerPlace: str
       border-right: 25px solid #ffffff;
 
       @media (max-width: 600px) {
-        left: ${bestBidPlace === playerPlace ? '100px' : '25px'};
+        left: ${trumpPlace === playerPlace ? '100px' : '25px'};
       }
     `,
     RIGHT: css`
@@ -49,7 +49,7 @@ const arrowPositionStyles = (pos: string, bestBidPlace: string, playerPlace: str
       border-left: 25px solid #ffffff;
 
       @media (max-width: 600px) {
-        right: ${bestBidPlace === playerPlace ? '100px' : '25px'};
+        right: ${trumpPlace === playerPlace ? '100px' : '25px'};
       }
     `,
   };
@@ -64,5 +64,5 @@ export const ArrowWrapperStyles = styled.div<Props>`
   margin: 30px auto;
   cursor: pointer;
 
-  ${({ position, bestBidPlace, playerPlace }) => arrowPositionStyles(position, bestBidPlace, playerPlace)};
+  ${({ position, trumpPlace, playerPlace }) => arrowPositionStyles(position, trumpPlace, playerPlace)};
 `;

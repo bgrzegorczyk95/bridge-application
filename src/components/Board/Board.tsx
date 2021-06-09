@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { usePlaces } from '../../hook/usePlaces';
 import { Card } from '../Cards/Card';
 import { Modal } from '../Modal/Modal';
@@ -17,12 +17,19 @@ import { HamburgerButton } from './components/HamburgerButton/HamburgerButton';
 import { BiddingCards } from './components/BiddingCards/BiddingCards';
 import { Lobby } from '../Lobby/Lobby';
 import { Waiting } from './components/Waiting/Waiting';
+import { Card as CardTypes, Player } from '../../@types/types';
 
-export const Board = ({ socket, gameId }: any) => {
-  const [isVisibleTable, setIsVisibleTable] = useState(false);
-  const { clientId, player, game, statuses, resetGame } = useContext(SocketContext);
+interface Props {
+  socket: WebSocket;
+  gameId: number
+}
+
+export const Board = ({ socket, gameId }: Props) => {
+  const [isVisibleTable, setIsVisibleTable] = useState<boolean>(false);
+  const { player, game, statuses, resetGame } = useContext(SocketContext);
+
   const { handleClickCard } = usePlaces(socket, game, player, gameId);
-  const isStartedAuctionOrGame = game?.statuses.auctionStarted || game?.statuses.gameStarted;
+  const isStartedAuctionOrGame: boolean = game?.statuses.auctionStarted || game?.statuses.gameStarted;
 
   return (
     game ? (
@@ -31,38 +38,37 @@ export const Board = ({ socket, gameId }: any) => {
         <Modal isOpen={statuses?.endGame}><EndGame resetGame={resetGame} game={game} /></Modal>
         {game?.statuses.auctionStarted && <Auction game={game} socket={socket} gameId={gameId} player={player} />}
         {game?.statuses.waitingForPlayers && <Waiting resetGame={resetGame}/>}
-        {isStartedAuctionOrGame && game?.players?.map((item: any, index: number) => (
+        {game?.players?.map((item: Player, index: number) => (
           <Card
             key={index}
             place={item.place}
             cards={item.cards}
             user={item?.name}
             cardsAmount={item.cardsAmount}
-            position={setPosition(item, clientId, player)}
+            position={setPosition(item.place, player)}
             isVisible={item.cards.length}
-            handleClickCard={(card: any) => handleClickCard(card, item)}
+            handleClickCard={(card: CardTypes) => handleClickCard(card, item)}
           />
         ))}
-        {game?.bestBid?.value && (
+        {game?.trump?.value && (
           <Info
             game={game}
-            value={game.bestBid.value}
+            value={game.trump.value}
             player={player}
-            place={game.bestBid.place}
+            place={game.trump.place}
           />
         )}
         <ThrownCards
           player={player}
-          clientId={clientId}
           isGameStarted={statuses?.gameStarted}
           cards={game?.thrownCards}
-          bestBidPlace={game?.bestBid.place}
+          trumpPlace={game?.trump.place}
         />
         {isStartedAuctionOrGame && (
           <TurnArrow
             game={game}
             playerPlace={player?.place}
-            position={setPosition(game?.turn, clientId, player)}
+            position={setPosition(game?.turn?.place, player)}
           />
         )}
         {game?.statuses?.auctionStarted && (

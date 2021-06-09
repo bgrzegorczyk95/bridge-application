@@ -1,10 +1,10 @@
-import React from 'react';
+import { Game } from '../../../../@types/types';
 import { CountDown } from '../../../CountDown/CountDown';
 import { EndGameWrapper, EndGameContent } from './EndGameStyles';
 
 interface Props {
-  game: any;
-  resetGame: any;
+  game: Game;
+  resetGame: () => void;
 }
 
 export const EndGame = ({ game, resetGame }: Props) => {

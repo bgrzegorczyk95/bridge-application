@@ -1,22 +1,21 @@
-import React from 'react';
+import { Player, Throw } from '../../@types/types';
 import * as playerCards from '../../assets/img/cards';
 import { setPosition } from '../../utilities/positions';
 import { WrapperStyles, CardWrapperStyles, CardStyles } from './ThrownCardsStyles';
 
 interface Props {
-  cards: any;
-  player: any;
-  clientId: string;
-  bestBidPlace: string;
+  cards: Throw[];
+  player: Player;
+  trumpPlace: string;
   isGameStarted: boolean;
 }
 
-export const ThrownCards = ({ cards, player, clientId, bestBidPlace, isGameStarted }: Props) => {
+export const ThrownCards = ({ cards, player, trumpPlace, isGameStarted }: Props) => {
   return (
     isGameStarted ? (
-      <WrapperStyles bestBidPlace={bestBidPlace} playerPlace={player.place || 'N'}>
-        {cards.map((card: any, index: number) => (
-          <CardWrapperStyles position={setPosition(card, clientId, player)} key={index}>
+      <WrapperStyles trumpPlace={trumpPlace} playerPlace={player.place || 'N'}>
+        {cards.map((card: Throw, index: number) => (
+          <CardWrapperStyles position={setPosition(card.place, player)} key={index}>
             <CardStyles src={playerCards.default[`${card.value}${card.color}`]} />
           </CardWrapperStyles>
         ))}

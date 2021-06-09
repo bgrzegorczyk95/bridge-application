@@ -19,9 +19,11 @@ module.exports = {
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        'react-hooks',
     ],
     "rules": {
         "@typescript-eslint/explicit-module-boundary-types": 0,
+        "react/react-in-jsx-scope": 0,
     }
 };

@@ -1,4 +1,6 @@
-export const useAuction = (bidding: any, socket: any, player: any, gameId: number, turn: string) => {
+import { Player, Turn } from "../@types/types";
+
+export const useAuction = (socket: WebSocket, player: Player, gameId: number, turn: Turn) => {
   const setBid = (row: number, col: number, colorName: string, value: string) => {
     const payLoad = {
       method: "bid",

@@ -1,23 +1,24 @@
 import { useState } from 'react';
+import { Game, Player } from '../@types/types';
 
-const initialPlayer = { place: undefined, takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
+const initialPlayer: Player = { place: undefined, takenPlace: false, uuid: undefined, name: undefined, cards: [], cardsAmount: 0, isReady: false };
 
-const setCurrentPlayer = (users, clientId: string) => {
-  let player = { ...initialPlayer };
+const setCurrentPlayer = (players: Player[], clientId: string) => {
+  let currentPlayer: Player = { ...initialPlayer };
 
-  users.forEach((user) => {
-    if (user?.uuid === clientId) {
-      player = user;
+  players.forEach((player: Player) => {
+    if (player?.uuid === clientId) {
+      currentPlayer = player;
     }
   });
 
-  return player;
+  return currentPlayer;
 };
 
-const checkIfPlayerInGame = (game, clientId) => {
+const checkIfPlayerInGame = (game: Game, clientId: string) => {
   let isPlayerInGame = false;
 
-  game?.players.forEach((player: any) => {
+  game?.players.forEach((player: Player) => {
     if (player?.uuid === clientId) {
       isPlayerInGame = true;
     }
@@ -26,16 +27,18 @@ const checkIfPlayerInGame = (game, clientId) => {
   return isPlayerInGame;
 };
 
-export const useSocketMessage = (socket: any, gameId: number, clientId: string, setId: any) => {
-  const [player, setPlayer] = useState<any>(initialPlayer);
+type setClientId = (id: string) => void;
+
+export const useSocketMessage = (socket: WebSocket, gameId: number, clientId: string, setClientId: setClientId) => {
+  const [player, setPlayer] = useState<Player>(initialPlayer);
   const [userName, setUserName] = useState<string | undefined>('');
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<Game[]>([]);
 
   const resetGame = () => {
     socket.send(JSON.stringify({ method: 'resetGame', gameId }));
   };
 
-  socket.onmessage = (message) => {
+  socket.onmessage = (message: WebSocketMessageEvent) => {
     const response = JSON.parse(message.data);
     let gamesChanged = [...games];
 
@@ -43,7 +46,7 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
       gamesChanged = [...response.games];
 
       if (!clientId) {
-        setId(response.clientId);
+        setClientId(response.clientId);
         localStorage.setItem('clientId', response.clientId);
         localStorage.removeItem('gameId');
       } else if (gameId || gameId === 0) {
@@ -61,14 +64,6 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
       }
     }
 
-    if (response?.method === 'updatePlaces') {
-      const users = response.users;
-      gamesChanged[gameId] = { ...gamesChanged[gameId], players: users };
-
-      const player = setCurrentPlayer(users, clientId);
-      setPlayer(player);
-    }
-
     if (response.method === 'update') {
       gamesChanged = [...response.games];
 
@@ -78,39 +73,6 @@ export const useSocketMessage = (socket: any, gameId: number, clientId: string, 
 
         setPlayer(player);
       }
-    }
-
-    if (response?.method === 'startBidding') {
-      const { turn, statuses } = response;
-      gamesChanged[gameId] = { ...gamesChanged[gameId], turn, statuses };
-    }
-
-    if (response?.method === 'bid') {
-      const { turn, bestBid, biddingHistory, statuses } = response;
-      gamesChanged[gameId] = { ...gamesChanged[gameId], turn, bestBid, biddingHistory, statuses };
-    }
-
-    if (response?.method === 'throw') {
-      const { thrownCards, turn, players } = response;
-
-      gamesChanged[gameId] = { ...gamesChanged[gameId], turn, thrownCards, players };
-
-      const player = setCurrentPlayer(players, clientId);
-      setPlayer(player);
-
-      if (thrownCards.length === 4) {
-        socket.send(JSON.stringify({ method: 'bestThrow', gameId }));
-      }
-    }
-
-    if (response?.method === 'bestThrow') {
-      const { thrownCards, turn, gamePoints } = response;
-      gamesChanged[gameId] = { ...gamesChanged[gameId], turn, thrownCards, gamePoints };
-    }
-
-    if (response?.method === 'endGame') {
-      const { statuses, gamePoints } = response;
-      gamesChanged[gameId] = { ...gamesChanged[gameId], statuses, gamePoints };
     }
 
     if (response?.method === 'resetGame') {

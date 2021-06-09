@@ -1,4 +1,3 @@
-import React from 'react';
 import { MainStyles, MainContent } from './MainStyles';
 
 export const Main = () => {

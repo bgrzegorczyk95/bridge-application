@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
-const colors = {
+const colors: { [key: string]: string } = {
   S: '#00cc00',
   H: '#ff3300',
   C: '#999999',
@@ -8,7 +8,7 @@ const colors = {
   NT: '#0000ff',
 };
 
-const background = {
+const background: { [key: string]: string } = {
   S: '#ccffcc',
   H: '#ffd6cc',
   C: '#d9d9d9',
@@ -16,8 +16,8 @@ const background = {
   NT: '#ccccff',
 };
 
-const positions = (pos: string, pos2: string, margin: number) => {
-  const position = {
+const positions = (pos: string, pos2: string, margin: number): FlattenSimpleInterpolation => {
+  const position: { [key: string]: { [key: string]: FlattenSimpleInterpolation } } = {
     N: {
       N: css`
         bottom: 90px;

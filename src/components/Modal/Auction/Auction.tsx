@@ -1,22 +1,22 @@
-import React from 'react';
+import { Game, Player } from '../../../@types/types';
 import { useAuction } from '../../../hook/useAuction';
 import { auctionOptions } from '../../../utilities/auctionOptions';
 import { checkIfDoubledAndRedoubled } from '../../../utilities/checkIfDoubledAndRedoubled';
 import { AuctionRowStyles, ColorStyles, AuctionColStyles, PassStyles, XStyles, AuctionValue, BiddingWrapper, BiddingContent } from './AuctionStyles';
 
 interface Props {
-  socket: any;
+  socket: WebSocket;
   gameId: number;
-  game: any;
-  player: any;
+  game: Game;
+  player: Player;
 }
 
 export const Auction = ({ game, player, socket, gameId }: Props) => {
-  const { setBid, setPass, setDoubled, setRedoubled } = useAuction(game.bestBid, socket, player, gameId, game.turn);
-  const { isDoubled, isRedoubled } = checkIfDoubledAndRedoubled(game.bestBid, player);
+  const { setBid, setPass, setDoubled, setRedoubled } = useAuction(socket, player, gameId, game.turn);
+  const { isDoubled, isRedoubled } = checkIfDoubledAndRedoubled(game.trump, player);
 
   const renderCol = (row: number, col: number, value: string, color: { name: string, image: string }) => {
-    const disabled = row < game.bestBid?.row || (row === game.bestBid?.row && col <= game.bestBid?.col);
+    const disabled = row < game.trump?.row || (row === game.trump?.row && col <= game.trump?.col);
 
     return (
       <AuctionColStyles

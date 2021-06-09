@@ -1,3 +1,5 @@
+import { Trump, Player } from "../@types/types";
+
 const placeTypes = {
   N: 'S',
   S: 'N',
@@ -5,9 +7,9 @@ const placeTypes = {
   W: 'E',
 };
 
-export const checkIfDoubledAndRedoubled = (bestBid: any, player: any) => {
-  const isDoubled = bestBid?.col >= 0 && !bestBid?.doubled && !bestBid?.redoubled && bestBid?.place !== placeTypes[player.place];
-  const isRedoubled = bestBid?.doubled && !bestBid?.redoubled && (bestBid?.place === placeTypes[player.place] || bestBid?.place === player.place);
+export const checkIfDoubledAndRedoubled = (trump: Trump, player: Player) => {
+  const isDoubled = trump?.col >= 0 && !trump?.doubled && !trump?.redoubled && trump?.place !== placeTypes[player.place];
+  const isRedoubled = trump?.doubled && !trump?.redoubled && (trump?.place === placeTypes[player.place] || trump?.place === player.place);
 
   return { isDoubled, isRedoubled };
 }

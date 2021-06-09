@@ -1,16 +1,16 @@
-import React from 'react';
+import { Bid } from '../../../../@types/types';
 import { colorTypes } from '../../../../assets/img/colors';
 import { BiddingCard, BiddingCardsContent, BiddingCardsWrapper, CardValue, DoubledCard, Img, PassCard, RedoubledCard } from './BiddingCardsStyles';
 
 interface Props {
-  biddingHistory: any;
+  biddingHistory: Bid[];
   place: string;
 }
 
-const splitBiddings = (biddingHistory: any = []) => {
-  const biddings = { N: [], S: [], E: [], W: [] };
+const splitBiddings = (biddingHistory: Bid[] = []) => {
+  const biddings: any = { N: [], S: [], E: [], W: [] };
 
-  biddingHistory.forEach((bid: any) => {
+  biddingHistory.forEach((bid: Bid) => {
     biddings[bid.place].push(bid);
   });
 
@@ -19,16 +19,17 @@ const splitBiddings = (biddingHistory: any = []) => {
 
 export const BiddingCards = ({ biddingHistory, place }: Props) => {
   const biddings = splitBiddings(biddingHistory);
+
   return (
     <BiddingCardsWrapper>
-      {Object.keys(biddings).map((bidList: any) => (
+      {Object.keys(biddings).map((bidList) => (
         <BiddingCardsContent
           key={bidList}
           playerPosition={place || bidList}
           bidPlace={bidList}
           margin={biddings[bidList].length * 30}
         >
-          {biddings[bidList]?.map((bid: any, i) => (
+          {biddings[bidList]?.map((bid: Bid, i: number) => (
             <BiddingCard
               key={i}
               pass={bid?.pass}
